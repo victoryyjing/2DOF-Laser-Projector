@@ -28,8 +28,6 @@ int16_t position2;
 #define dt 0.001
 #define FDDdeg 24 // IMPORTANT
 // const int numBits = sizeof(counterPins) / sizeof(counterPins[0]);
-// #define lDEFAULTPWM 80 // LASER MIN = 80
-// #define bDEFAULTPWM 100 // BASE MIN = 100
 
 #define DEFAULTPWM 180
 
