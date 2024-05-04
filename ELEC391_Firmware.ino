@@ -1,6 +1,3 @@
-volatile double DEBUGVAR = 0;
-volatile double DEBUGVAR2 = 0;
-
 #define ISR_ON_TIMER 12
 #define ENCODER_OPTIMIZE_INTERRUPTS
 
@@ -80,21 +77,14 @@ volatile double lFDDarray[FDDdeg] = {0};
 void setup() {
   // Set pin modes
   pinMode(ISR_ON_TIMER, OUTPUT);
-  // for (int i = 0; i < numBits; i++) {
-  //   pinMode(counterPins[i], INPUT);
-  // }
-  // pinMode(DIR_INPUT, INPUT);
-
   // Motor pin modes
-  //pinMode(enA, OUTPUT);
-	pinMode(in1, OUTPUT);
-	pinMode(in2, OUTPUT);
-  //pinMode(enB, OUTPUT);
-	pinMode(in3, OUTPUT);
-	pinMode(in4, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
 
   /* vvvvvvvvvvvv PID TUNING PARAMETERS vvvvvvvvvvvv */
-   // Laser tuning parameters
+  // Laser tuning parameters
   Kmaster_l = 190;
   Kp_l = 1;
   Ki_l = 1;
@@ -112,8 +102,6 @@ void setup() {
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(115200);           // start serial for output
 
-  //Serial.begin(9600);
- 
   // Timer stuff I definitely understand
   cli();
   TCCR1A = 0;           TCCR1B = 0;
@@ -121,53 +109,15 @@ void setup() {
   OCR1A = ISRrate/0.000016;
   sei();
 
-  // Turn off motors - Initial state
-	// digitalWrite(in1, LOW);
-	// digitalWrite(in2, LOW);
-  // digitalWrite(in3, LOW);
-	// digitalWrite(in4, LOW);
-
   // Default PWM state
   analogWrite(in1, DEFAULTPWM);
   analogWrite(in2, DEFAULTPWM);
   analogWrite(in3, DEFAULTPWM);
   analogWrite(in4, DEFAULTPWM);
-  // btargetpos = 50;
-  // ltargetpos = 50;
 }
 
 
 void loop() {
-
-  // if(abs(lmotorpos - ltargetpos) <= 1){
-  //   delay(0);
-  //   if(abs(lmotorpos - ltargetpos) <= 1){
-  //     ltargetpos *= -1;
-  //   } 
-  // }
-
-  // if(abs(bmotorpos - btargetpos) <= 1){
-  //   delay(0);
-  //   if(abs(bmotorpos - btargetpos) <= 1){
-  //     btargetpos *= -1;
-  //   } 
-  // }
-
-  /* ------------------------------- */
-  // if(abs(lmotorpos - ltargetpos) <= 1){
-  //   delay(0);
-  //   if(abs(lmotorpos - ltargetpos) <= 1){
-  //     laserindex = (laserindex + 1) % (sizeof(lasertargets) / sizeof(lasertargets[0]));
-  //   }
-  // }
-  // ltargetpos = lasertargets[laserindex];
-
-  // if(abs(bmotorpos - btargetpos) <= 5){
-  //   baseindex = (baseindex + 1) % (sizeof(basetargets) / sizeof(basetargets[0]));
-  // }
-  // btargetpos = basetargets[baseindex];
-  /* ------------------------------- */
-
   /* ------------------------------- */
   if(abs(lmotorpos - ltargetpos) <= 2 && abs(bmotorpos - btargetpos) <= 2){
     laserindex = (laserindex + 1) % (sizeof(lasertargets) / sizeof(lasertargets[0]));
@@ -176,33 +126,6 @@ void loop() {
   ltargetpos = lasertargets[laserindex];
   btargetpos = basetargets[baseindex];
   /* ------------------------------- */
-
-
-  // Test code for PID
-  Serial.print(btargetpos); Serial.print(" ");
-  Serial.print(bmotorpos); Serial.print(" ");
-  Serial.print(bpos_adj);  Serial.print(" ");
-  // Serial.print(ltargetpos);  Serial.print(" ");
-  // Serial.print(lmotorpos);  Serial.print(" ");
-  // Serial.print(lpos_adj); Serial.print(" ");
-
-  //Serial.print(DEBUGVAR); Serial.print(" ");
-  // Serial.print(DEBUGVAR2); Serial.print(" ");
-  Serial.print("\n");
-
-
-  // if(lpos_adj < 0) { // If adjust request is negative, we are above our goal
-  //   analogWrite(in1, map(abs(lpos_adj), 0, lMapRange, DEFAULTPWM, 255));
-  //   analogWrite(in2, 0);
-  // } else if(lpos_adj > 0) { // If request is positive, we are below our goal
-  //   analogWrite(in1, 0);
-  //   analogWrite(in2, map(abs(lpos_adj), 0, lMapRange, DEFAULTPWM, 255));
-  // } else {
-  //   analogWrite(in1, 0);
-	//   analogWrite(in2, 0);
-  // }
-  // DEBUGVAR = map(abs(lpos_adj), 0, lMapRange, DEFAULTPWM, 255);
-
 
   if(lpos_adj < 0) { // If adjust request is negative, we are above our goal
     analogWrite(in1, map(abs(lpos_adj), 0, lMapRange, DEFAULTPWM, 255));
@@ -216,7 +139,6 @@ void loop() {
     analogWrite(in1, 0);
 	  analogWrite(in2, 0);
   }
-  DEBUGVAR = map(abs(lpos_adj), 0, lMapRange, DEFAULTPWM, 255);
 
 
 
@@ -230,7 +152,6 @@ void loop() {
     analogWrite(in3, 0);
 	  analogWrite(in4, 0);
   }
-  DEBUGVAR2 = map(abs(bpos_adj), 0, bMapRange, DEFAULTPWM, 255);
 }
 
 
